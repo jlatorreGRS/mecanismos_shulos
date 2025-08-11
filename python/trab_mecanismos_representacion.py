@@ -1,6 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
-plt.switch_backend("Agg")
+
+# Determine whether an interactive backend is available. If Matplotlib is
+# running with a non-interactive backend (e.g. Agg or the Jupyter inline
+# backend), attempting to call ``plt.pause`` triggers a warning.  We guard the
+# animation calls so the script runs cleanly in both interactive and headless
+# environments.
+backend = plt.get_backend().lower()
+interactive = "agg" not in backend and "backend_inline" not in backend
+
 
 # Trabajo Teoría de Mecanismos
 # Representación
@@ -91,7 +99,13 @@ for i in range(npasos):
     plt.plot([x3, xC], [y3, yC], color="k", linewidth=4, marker="o", markersize=6)
     plt.xlim([-400, 400])
     plt.ylim([-300, 300])
-    plt.pause(1e-10)
+    if interactive:
+        plt.pause(1e-10)
+    else:
+        # For non-interactive backends draw the canvas so the figure updates
+        # without attempting to display a window.
+        plt.draw()
+
     t[i] = i * At
     avance[i] = y2
     avancez2[i] = x2
@@ -101,3 +115,12 @@ plt.plot(t, avance, t, avancez2, "--")
 plt.title("Avance/retroceso de herramienta")
 plt.xlabel("tiempo (s)")
 plt.ylabel("Coordenada X [- -](mm), Y [-](mm)")
+
+
+# Display or save the final plot depending on backend capabilities. This keeps
+# the script usable both in environments with a GUI and in headless CI runs.
+if interactive:
+    plt.show()
+else:
+    plt.savefig("avance_retroceso.png")
+
