@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 backend = plt.get_backend().lower()
 interactive = "agg" not in backend and "backend_inline" not in backend
 
+
 # Trabajo Teoría de Mecanismos
 # Representación
 
@@ -104,6 +105,7 @@ for i in range(npasos):
         # For non-interactive backends draw the canvas so the figure updates
         # without attempting to display a window.
         plt.draw()
+
     t[i] = i * At
     avance[i] = y2
     avancez2[i] = x2
@@ -114,9 +116,11 @@ plt.title("Avance/retroceso de herramienta")
 plt.xlabel("tiempo (s)")
 plt.ylabel("Coordenada X [- -](mm), Y [-](mm)")
 
+
 # Display or save the final plot depending on backend capabilities. This keeps
 # the script usable both in environments with a GUI and in headless CI runs.
 if interactive:
     plt.show()
 else:
     plt.savefig("avance_retroceso.png")
+
